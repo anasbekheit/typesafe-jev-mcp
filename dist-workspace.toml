@@ -7,4 +7,9 @@ ci = "github"
 installers = ["shell", "powershell", "npm"]
 targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 hosting = "github"
-publish-jobs = ["npm"]
+publish-jobs = ["npm", "./publish-crates-io"]
+
+[dist.github-custom-job-permissions.publish-crates-io]
+id-token = "write"
+contents = "read"
+packages = "write"

@@ -1,0 +1,34 @@
+# Custom cargo-dist publish job (`./publish-crates-io` in dist-workspace.toml).
+# Survives `dist generate`. Called from Release after GitHub hosting succeeds.
+name: publish-crates-io
+
+on:
+  workflow_call:
+    inputs:
+      plan:
+        required: true
+        type: string
+
+jobs:
+  publish-crates-io:
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+        continue-on-error: true
+      - name: Publish to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.api-token || secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          if [ -z "${CARGO_REGISTRY_TOKEN}" ]; then
+            echo "No crates.io credentials. Enable Trusted Publishing for this repo+workflow, or set the CARGO_REGISTRY_TOKEN secret."
+            exit 1
+          fi
+          cargo publish --locked
