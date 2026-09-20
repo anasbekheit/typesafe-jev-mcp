@@ -9,11 +9,7 @@ use rmcp::ServiceExt;
 async fn main() {
     match std::env::args().nth(1).as_deref() {
         Some("--version") | Some("-V") => {
-            println!(
-                "{} {}",
-                env!("CARGO_PKG_NAME"),
-                env!("CARGO_PKG_VERSION")
-            );
+            println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
             return;
         }
         Some("--help") | Some("-h") => {
