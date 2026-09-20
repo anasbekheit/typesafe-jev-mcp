@@ -1,0 +1,29 @@
+[package]
+name = "typesafe-jev-mcp"
+version = "0.1.1"
+edition = "2021"
+license = "MIT"
+description = "MCP server exposing TypeSafe's Jev model as a typed evaluate tool"
+repository = "https://github.com/anasbekheit/typesafe-jev-mcp"
+homepage = "https://github.com/anasbekheit/typesafe-jev-mcp"
+keywords = ["mcp", "typesafe", "jev", "llm", "agent"]
+categories = ["command-line-utilities"]
+readme = "README.md"
+
+[dependencies]
+rmcp = { version = "3.4", features = ["server", "transport-io", "macros"] }
+tokio = { version = "1", features = ["rt", "macros", "time", "process"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "webpki-roots", "http2"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+schemars = "1"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
