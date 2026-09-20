@@ -110,10 +110,11 @@ impl Client {
             "the API key contains characters that cannot be sent in a header".to_string()
         })?;
         auth.set_sensitive(true);
-        Ok(Self {
-            http: reqwest::Client::new(),
-            auth,
-        })
+        let http = reqwest::Client::builder()
+            .user_agent(concat!("typesafe-jev-mcp/", env!("CARGO_PKG_VERSION")))
+            .build()
+            .map_err(|e| format!("building the HTTP client: {e}"))?;
+        Ok(Self { http, auth })
     }
 
     pub async fn evaluate(
